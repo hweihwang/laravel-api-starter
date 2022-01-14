@@ -6,7 +6,6 @@ use Domain\Todos\DataTransferObjects\CreateTodoData;
 use Domain\Todos\Models\Todo;
 use Exception;
 use Illuminate\Support\Facades\DB;
-use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 
 class CreateTodoAction
 {
@@ -14,9 +13,10 @@ class CreateTodoAction
      * @commment Create todo
      *
      * @param CreateTodoData $data
-     * @return void
+     * @return Todo
+     * @throws Exception
      */
-    public function __invoke(CreateTodoData $data)
+    public function __invoke(CreateTodoData $data): Todo
     {
         DB::beginTransaction();
         try {
@@ -24,6 +24,8 @@ class CreateTodoAction
                 'title' => $data->getTitle(),
                 'content' => $data->getContent(),
             ]);
+
+            throw new \RuntimeException('Cannot create todo');
 
             DB::commit();
 
